@@ -20,9 +20,22 @@ const Messagebox: React.FC<MessageProps> = ({ msg: { text, user }, name }) => {
   }
 
   return (
-    <div className="border-2 border-solid border-slate-950 p-3 m-5">
-      <div>{text}</div>
-      <div>{user}</div>
+    <div className="flex flex-col space-y-10">
+      {isSentByCurrentUser ? (
+        <div className="border-2 border-solid border-slate-950">
+          <p className="sentText pr-10">{trimmedName}</p>
+          <div className="messageBox backgroundBlue">
+            <p className="messageText colorWhite">{text}</p>
+          </div>
+        </div>
+      ) : (
+        <div className="border-2 border-soldi border-blue-500">
+          <div className="messageBox backgroundLight">
+            <p className="messageText colorDark">{text}</p>
+          </div>
+          <p className="sentText pl-10 ">{user}</p>
+        </div>
+      )}
     </div>
   );
 };

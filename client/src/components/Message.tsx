@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 import Messagebox from "./Messagebox";
-import queryString from "query-string";
 import { useLocation, useSearchParams } from "react-router-dom";
+import queryString from "query-string";
 
 // 영상에서의 connect와 달리 새로운 버전의 socket.io에서는 더 이상 connect이 필요없다.
 
@@ -21,18 +21,12 @@ interface MessagesObj {
 
 type MessageArray = MessagesObj[];
 
-function Message({ room, name }: MessageProps) {
-  // const { search } = useLocation();
-  // const values = queryString.parse(search);
-
-  // const [searchParams] = useSearchParams();
-  // const query = queryString.parse(searchParams.toString());
-
-  // container: width:100%으로 진행한다.
+//여기에서 Location을 받아야 한다
+function Message() {
   //결국 이 강의에서 말하는 것은 프론트엔드A => 벡엔드 => 프론트엔드B의 과정을 거쳐서 소켓 통신이 가능하다고 하는 것이다.
   //event을 emit하면 서버에서 그것을 받아서 다른 client에 연결해주는 역할을 담당한다.(서버: 중간 다리 역할?
   //다른 유저에게 받은 메세지를 받고 있다.
-  // const [messageReceived, setMessageReceived] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageArray>([]);
   // 추후에 유저를 식별하기 위해 사용해야 한다.
@@ -42,7 +36,12 @@ function Message({ room, name }: MessageProps) {
     event.preventDefault();
     socket.emit("send_Message", message, () => setMessage(""));
   };
+  //처음 마운트 될 때 처리하는 방식으로 전환했다.
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const name = searchParams.get("name");
+    const room = searchParams.get("room");
+
     if (room !== "") {
       socket.emit("join_room", { room, name }, (error: any) => {
         alert(error);
@@ -68,7 +67,7 @@ function Message({ room, name }: MessageProps) {
   //function for sending messages
 
   return (
-    <div className="container p-2 border-solid border-2 border-slate-800 w-80">
+    <div className=" w-[500px] h-[700px] p-2 border-solid border-2 border-slate-800">
       <input
         placeholder="메세지를 입력하시오"
         className="border-2 border-solid border-slate-950 rounded h-10 p-1"

@@ -23,6 +23,10 @@ io.on("connection", (socket) => {
 
   socket.on("join_room", ({ room, name }, callback) => {
     //client에서 보는 특정 room에 접속하게 되는 것이다.
+
+    //임의로 추가한 것 (falsy한 값이면 error를 return하도록 작성함)
+    if (!room || !name) return callback(error);
+
     const { error, user } = addUser({ id: socket.id, name, room });
 
     //어떤 callback 인지 어떻게 특정할 수 있지?? 의문이다.
