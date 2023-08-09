@@ -80,7 +80,7 @@ function Message({ room, name }: MessageProps) {
       <h1 className="">Message:</h1>
       {messages.map((msg, idx) => {
         console.log(msg, "msg");
-        return <Messagebox key={idx} msg={msg} />;
+        return <Messagebox key={idx} msg={msg} name={name} />;
       })}
     </div>
   );

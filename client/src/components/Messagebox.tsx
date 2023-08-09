@@ -1,19 +1,30 @@
-interface MessagesObj {
-  user: string;
-  text: string;
+interface MessageProps {
+  msg: {
+    text: string;
+    user: string;
+  };
+  name: string;
 }
 // { user, text }: MessagesObj
 
-function Messagebox(msg: any) {
+const Messagebox: React.FC<MessageProps> = ({ msg: { text, user }, name }) => {
   //   console.log(user, text, "user and text");
   //   const { user, text } = msg;
-  console.log(msg, "user and text");
+
+  let isSentByCurrentUser = false;
+
+  const trimmedName = name.trim().toLowerCase();
+
+  if (user === trimmedName) {
+    isSentByCurrentUser = true;
+  }
+
   return (
     <div className="border-2 border-solid border-slate-950 p-3 m-5">
-      <div>{msg.msg.user}</div>
-      <div>{msg.msg.text}</div>
+      <div>{text}</div>
+      <div>{user}</div>
     </div>
   );
-}
+};
 
 export default Messagebox;
