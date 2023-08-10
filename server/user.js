@@ -1,4 +1,4 @@
-const users = []; //user 목록이 저장된다. 
+const users = []; //user 목록이 저장된다.
 
 const addUser = ({ id, name, room }) => {
   console.log(name, room, "this is from server");
@@ -17,7 +17,7 @@ const addUser = ({ id, name, room }) => {
   const user = { id, name, room };
 
   users.push(user);
-
+  console.log(user); //서버에 유저 정보를 저장하고 있다.
   return { user };
 };
 

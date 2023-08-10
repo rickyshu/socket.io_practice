@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
 import Messagebox from "./Messagebox";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 
 // 영상에서의 connect와 달리 새로운 버전의 socket.io에서는 더 이상 connect이 필요없다.
@@ -26,7 +26,11 @@ function Message() {
   //결국 이 강의에서 말하는 것은 프론트엔드A => 벡엔드 => 프론트엔드B의 과정을 거쳐서 소켓 통신이 가능하다고 하는 것이다.
   //event을 emit하면 서버에서 그것을 받아서 다른 client에 연결해주는 역할을 담당한다.(서버: 중간 다리 역할?
   //다른 유저에게 받은 메세지를 받고 있다.
+
+  // const [name, setName] = useState<string>("");
+
   const [name, setName] = useState<string>("");
+  const [room, setRoom] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageArray>([]);
   // 추후에 유저를 식별하기 위해 사용해야 한다.
@@ -36,11 +40,16 @@ function Message() {
     event.preventDefault();
     socket.emit("send_Message", message, () => setMessage(""));
   };
-  //처음 마운트 될 때 처리하는 방식으로 전환했다.
+  // 처음 마운트 될 때 처리하는 방식으로 전환했다.
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const name = searchParams.get("name");
     const room = searchParams.get("room");
+
+    if (name && room) {
+      setName(name);
+      setRoom(room);
+    }
 
     if (room !== "") {
       socket.emit("join_room", { room, name }, (error: any) => {
@@ -76,9 +85,8 @@ function Message() {
       <button className="rounded bg-cyan-500 ml-4 p-1" onClick={sendMessage}>
         메세지 전송
       </button>
-      <h1 className="">Message:</h1>
+      <h1 className="flex flex-col space-y-3">Message:</h1>
       {messages.map((msg, idx) => {
-        console.log(msg, "msg");
         return <Messagebox key={idx} msg={msg} name={name} />;
       })}
     </div>

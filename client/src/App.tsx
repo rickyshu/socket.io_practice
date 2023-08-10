@@ -1,14 +1,10 @@
 import Message from "./components/Message";
 // import Join from "./components/Join";
 import Login from "./components/Login";
-import { useState } from "react";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  const [room, setRoom] = useState<string>("");
-  const [name, setUsername] = useState<string>("");
-  const [auth, setAuth] = useState<boolean>(false);
   return (
     <BrowserRouter>
       <Routes>

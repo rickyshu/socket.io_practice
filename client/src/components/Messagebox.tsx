@@ -5,14 +5,10 @@ interface MessageProps {
   };
   name: string;
 }
-// { user, text }: MessagesObj
 
 const Messagebox: React.FC<MessageProps> = ({ msg: { text, user }, name }) => {
-  //   console.log(user, text, "user and text");
-  //   const { user, text } = msg;
-
   let isSentByCurrentUser = false;
-
+  console.log(name, "hahaha");
   const trimmedName = name.trim().toLowerCase();
 
   if (user === trimmedName) {
@@ -20,7 +16,7 @@ const Messagebox: React.FC<MessageProps> = ({ msg: { text, user }, name }) => {
   }
 
   return (
-    <div className="flex flex-col space-y-10">
+    <>
       {isSentByCurrentUser ? (
         <div className="border-2 border-solid border-slate-950">
           <p className="sentText pr-10">{trimmedName}</p>
@@ -36,8 +32,11 @@ const Messagebox: React.FC<MessageProps> = ({ msg: { text, user }, name }) => {
           <p className="sentText pl-10 ">{user}</p>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
 export default Messagebox;
+
+//https://bobbyhadz.com/blog/react-scroll-to-bottom
+//scroll 하는건 위 방법을 참고해라!
