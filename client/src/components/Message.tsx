@@ -77,18 +77,16 @@ function Message() {
 
   return (
     <div className=" w-[500px] h-[700px] p-2 border-solid border-2 border-slate-800">
-      <input
-        placeholder="메세지를 입력하시오"
-        className="border-2 border-solid border-slate-950 rounded h-10 p-1"
-        onChange={(event) => setMessage(event.target.value)}
-      ></input>
+      <input placeholder="메세지를 입력하시오" className="border-2 border-solid border-slate-950 rounded h-10 p-1" onChange={(event) => setMessage(event.target.value)}></input>
       <button className="rounded bg-cyan-500 ml-4 p-1" onClick={sendMessage}>
         메세지 전송
       </button>
       <h1 className="flex flex-col space-y-3">Message:</h1>
-      {messages.map((msg, idx) => {
-        return <Messagebox key={idx} msg={msg} name={name} />;
-      })}
+      <div className="flex flex-col space-y-5">
+        {messages.map((msg, idx) => {
+          return <Messagebox key={idx} msg={msg} name={name} />;
+        })}
+      </div>
     </div>
   );
 }
