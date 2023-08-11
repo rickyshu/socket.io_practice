@@ -38,7 +38,7 @@ const Messagebox: React.FC<MessageProps> = ({ msg: { text, user }, name }) => {
           <p className="messageText colorDark">{text}</p>
           <div className="border-2 border-soldi border-blue-500">
             <div className="messageBox backgroundLight"></div>
-            <p className="sentText pl-10 ">{user}</p>
+            <p className="">{user}</p>
           </div>
         </div>
       )}

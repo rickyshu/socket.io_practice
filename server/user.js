@@ -21,9 +21,12 @@ const addUser = ({ id, name, room }) => {
   return { user };
 };
 
-const removeUser = (id) => {
-  //특정 유저를 제거하는 것
-  const index = users.findIndex((user) => user.id === id);
+const removeUser = (name) => {
+  //특정 유저를 제거하는 것 name이 중복되지 않는다는 전제하에 이것으로 하는 것! 
+  //만약 중복이 된다면, 다른 방식을 찾아봐야 한다.
+  console.log(users, "user 정보 출력");
+  const index = users.findIndex((user) => user.name === name);
+  console.log(index);
   if (index !== -1) return users.splice(index, 1)[0];
   //못찾으면 기능이 없음
 };

@@ -48,6 +48,10 @@ io.on("connection", (socket) => {
       .to(user.room)
       .emit("message", { user: "admin", text: `${user.name} has joined!` });
 
+    io.to(user.room).emit("userData", {
+      // const user=getUsersInRoom(user.room);
+    });
+
     socket.join(user.room);
 
     //이건 왜 추가하는거지? =>이것을 추가해야 함수가 실행된다고 보면 될듯
@@ -76,10 +80,20 @@ io.on("connection", (socket) => {
         user: "Admin",
         text: `${user.name}가 탈주했습니다!`,
       });
-      //나간 유저가 제외된 데이터만 남게 된다.
+
       io.to(user.room).emit("roomData", {
         room: user.room,
         users: getUsersInRoom(user.room),
+      });
+    }
+  });
+  socket.on("leave", (name) => {
+    console.log(name, "leave");
+    const user = removeUser(name);
+    if (user) {
+      socket.broadcast.to(user.room).emit("message", {
+        user: "admin",
+        text: `${user.name}님이 퇴장하였습니다.`,
       });
     }
   });
