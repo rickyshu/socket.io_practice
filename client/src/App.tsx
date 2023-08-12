@@ -17,16 +17,3 @@ function App() {
 
 export default App;
 
-// <div className="p-10 flex border-solid border-red-500 border-2 h-full">
-//   {/* {auth ? (
-//     <Message room={room} name={name} />
-//   ) : (
-//     <Join
-//       room={room}
-//       name={name}
-//       setRoom={setRoom}
-//       setUsername={setUsername}
-//       setAuth={setAuth}
-//     />
-//   )} */}
-// </div>

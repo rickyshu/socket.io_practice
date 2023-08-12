@@ -9,7 +9,13 @@ app.use(cors()); //cors middleWare를 사용 for accept the cors
 app.use(router); //router 사용
 
 //유저와 관련된 모든 동작을 처리하기 위해 import을 해준다.
-const { addUser, removeUser, getUser, getUsersInRoom } = require("./user");
+const {
+  addUser,
+  removeUser,
+  getUser,
+  getUsersInRoom,
+  getNumberofUsersInRoom,
+} = require("./user");
 
 const server = http.createServer(app); //create the http server with expres
 const io = new Server(server, {
@@ -22,8 +28,6 @@ const io = new Server(server, {
 //server listening to an event from client each user will recieve different id
 //(socket) client side socket과 연결되는 고리이다.
 io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
   socket.on("join_room", ({ room, name }, callback) => {
     //client에서 보는 특정 room에 접속하게 되는 것이다.
 
@@ -31,10 +35,10 @@ io.on("connection", (socket) => {
     if (!room || !name) return callback(error);
 
     const { error, user } = addUser({ id: socket.id, name, room });
-
     //어떤 callback 인지 어떻게 특정할 수 있지?? 의문이다.
     if (error) return callback(error);
 
+    const userInfo = getNumberofUsersInRoom(room);
     //error가 발생하지 않으면 아래 코드들이 실행된다.
 
     //telling user welcome to the chat
@@ -48,10 +52,12 @@ io.on("connection", (socket) => {
       .to(user.room)
       .emit("message", { user: "admin", text: `${user.name} has joined!` });
 
-    io.to(user.room).emit("userData", {
-      // const user=getUsersInRoom(user.room);
+    socket.emit("userInfo", {
+      userInfo,
     });
-
+    //socket.join(user.room)는 Socket.io에서 소켓을 방(Room)에 연결하는 메서드입니다
+    //join은 방으로 연결할 때 사용을 한다.
+    //
     socket.join(user.room);
 
     //이건 왜 추가하는거지? =>이것을 추가해야 함수가 실행된다고 보면 될듯
@@ -62,14 +68,21 @@ io.on("connection", (socket) => {
   socket.on("send_Message", (message, callback) => {
     //sending to everyone but yourself
     // socket.broadcast.emit("receive_message", data);
-    console.log("message from client", message);
     const user = getUser(socket.id);
-
     //sending the data to specific room users from server
     //클라이언트에서 아래 데이터를 받을 수 있다. =>socket을 사용해서 안 보였던 것이구나.
-    io.to(user.room).emit("message", { user: user.name, text: message });
+    if (user.room && user.name) {
+      io.to(user.room).emit("message", { user: user.name, text: message });
+    }
 
     callback();
+  });
+
+  //유효성 검사하기
+  socket.on("checkforvalidation", (room) => {
+    console.log("checking이 들어왔다.");
+    const userInfo = getNumberofUsersInRoom(room);
+    socket.emit("userInfo", userInfo);
   });
 
   socket.on("disconnect", () => {
@@ -88,7 +101,6 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("leave", (name) => {
-    console.log(name, "leave");
     const user = removeUser(name);
     if (user) {
       socket.broadcast.to(user.room).emit("message", {
@@ -117,4 +129,7 @@ io.to().emit() 메서드를 사용하면, 주어진 방(room)의 모든 소켓�
 ===socket.to
 주어진 방에서 현재 소켓을 제외한 모든 소켓에 메시지를 전송한다. (본인에게 전송이 안 된다.)
 
+===socket.broadcast.to
+현재 소켓을 제외한 모든 클라이언트에게 메시지를 보낼 때 사용하는 메서드이다. 소켓에 연결된 모든 소켓에 
+메세지를 보내지만 자기 자신을 제외한다.
 */
