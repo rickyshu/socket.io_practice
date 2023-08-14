@@ -80,7 +80,6 @@ io.on("connection", (socket) => {
 
   //유효성 검사하기
   socket.on("checkforvalidation", (room) => {
-    console.log("checking이 들어왔다.");
     const userInfo = getNumberofUsersInRoom(room);
     socket.emit("userInfo", userInfo);
   });

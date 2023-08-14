@@ -1,12 +1,13 @@
 import { io } from "socket.io-client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Messagebox from "./Messagebox";
 import { useNavigate } from "react-router-dom";
 
 //types
 import { Users } from "../types";
 
-import threeD from "./Threejs/threeD";
+import Three3D from "./Threejs/threeD";
+
 // 영상에서의 connect와 달리 새로운 버전의 socket.io에서는 더 이상 connect이 필요없다.
 
 const ENDPOINT = "http://localhost:3001";
@@ -29,6 +30,9 @@ const Message = () => {
   const [message, setMessage] = useState<string>("");
   const [userNumInfo, setuserNumInfo] = useState<Users[]>([]);
   const [messages, setMessages] = useState<MessageArray>([]);
+
+  const bottomRef = useRef(null);
+
   const navigate = useNavigate();
   // 추후에 유저를s 식별하기 위해 사용해야 한다.
   //room까지 추가되면, 어떤 room에 접속할건지에 대한 정보도 함께 보내야 한다.
@@ -88,12 +92,19 @@ const Message = () => {
     });
   }, [messages]);
 
+  // 나중에 해결하기!
+  // useEffect(() => {
+  //   // 👇️ scroll to bottom every time messages change
+  //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [messages]);
+
   //처음 마운트 될 때만 적용하면 되나? =>추가적인 확인이 필요하다.
   //의문: 다른 브라우저에서 값이 변경되면 여기에서도 변경되나? 아니지 않나? 독립적으로 실행
   //function for sending messages
   return (
-    <>
-      <div className=" w-[500px] h-[700px] p-2 border-solid border-2 border-slate-800 rounded-lg">
+    <div className="w-full h-full relative">
+      <Three3D />
+      <div className="absolute bottom-3 right-4 bg-slate-50 w-[500px] h-[700px] p-2 border-solid border-2 border-slate-800 rounded-lg">
         {/* <threeD /> */}
         <p>방 번호: {room}</p>
         <p>이름: {name}</p>
@@ -132,10 +143,11 @@ const Message = () => {
             {messages.map((msg, idx) => {
               return <Messagebox key={idx} msg={msg} name={name} />;
             })}
+            <div ref={bottomRef} />
           </div>
         ) : null}
       </div>
-    </>
+    </div>
   );
 };
 
